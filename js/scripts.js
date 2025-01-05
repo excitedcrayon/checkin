@@ -1,32 +1,82 @@
-console.log("check in");
+console.log("check in initialized");
 
 window.addEventListener('DOMContentLoaded', () => {
     registerUser();
+    getRegisteredList();
 });
 
 const registerUser = () => {
     const firstname = document.querySelector("[name='firstname']");
     const middlename = document.querySelector("[name='middlename']");
     const lastname = document.querySelector("[name='lastname']");
+    const gender = document.querySelector("[name='gender']");
     const region = document.querySelector("[name='region']");
+    const email = document.querySelector("[name='email']");
     const phone = document.querySelector("[name='phone']");
     const passportnumber = document.querySelector("[name='passportnumber']");
     const placeofstay = document.querySelector("[name='placeofstay']");
     const generatedImage = document.querySelector("[name='generatedimage']");
     const registerButton = document.querySelector("[name='register']");
+    const formResponseSpanElement = document.querySelector(".form-response span");
+    
+    const URL = `${location.href}/register.php`;
 
     registerButton.addEventListener('click', (e) => {
-        e.preventDefault();
+
+        e.preventDefault(); // prevent form submission on initial click
 
         const usernameData = ( middlename.value.length > 0 ) ? `${firstname.value} ${middlename.value} ${lastname.value}` : `${firstname.value} ${lastname.value}`;
 
         generateUserQRCode(usernameData, generatedImage);
 
-        console.log('Registering and Generation QR Code');
+        //console.log('Registering and Generation QR Code');
+
+        const formData = new FormData();
 
         setTimeout(() => {
-            console.log(generatedImage.files);
+
+            //console.log(generatedImage.files);
+
+            formData.append('firstname', firstname.value);
+            formData.append('middlename', middlename.value);
+            formData.append('lastname', lastname.value);
+            formData.append('gender', gender.options[gender.selectedIndex].value);
+            formData.append('region', region.value);
+            formData.append('email', email.value);
+            formData.append('phone', phone.value);
+            formData.append('passportnumber', passportnumber.value);
+            formData.append('placeofstay', placeofstay.value);
+            formData.append('file', generatedImage.files[0]);
+
             // send data to database here
+            fetch(URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then((response) => response.json())
+            .then((data) => {
+
+                //console.log(data);
+
+                if ( data.userExists ) {
+
+                    formResponseSpanElement.className = '';
+                    formResponseSpanElement.className = 'error';
+                    formResponseSpanElement.innerHTML = '';
+                    formResponseSpanElement.textContent = '';
+                    formResponseSpanElement.textContent = `${data.userExistsMessage}`;
+
+                } else if ( data.userCreated ) {
+
+                    formResponseSpanElement.className = '';
+                    formResponseSpanElement.className = 'success';
+                    formResponseSpanElement.innerHTML = '';
+                    formResponseSpanElement.textContent = '';
+                    formResponseSpanElement.textContent = `${data.userCreatedMessage}`;
+
+                }
+            })
+            .catch(err => console.log(err));
         }, 1000);
 
 
@@ -54,3 +104,25 @@ const generateUserQRCode = async ( username, generatedImageElement ) => {
     });
 
 };
+
+const getRegisteredList = () => {
+    
+    const listWrapper = document.querySelector('.list-wrapper');
+    const listSearch = document.querySelector('.list-search');
+    const listContainer = document.querySelector('.list-container');
+
+    const getURL = `${location.href}/register_list.php`;
+
+    fetch(getURL)
+    .then((response) => response.json())
+    .then((responseList) => {
+
+        console.log(responseList);
+
+        if ( responseList.length > 0 ) {
+            console.log(responseList);
+        }
+    })
+    .catch(err => console.log(err));
+
+}

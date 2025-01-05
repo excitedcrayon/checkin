@@ -16,6 +16,12 @@ body{
 
     --color-white: #fff;
     --color-grey: #eee;
+
+    --notification-error: #C00;
+    --notification-error-background: #E2BFBF;
+
+    --notification-success: #0C0;
+    --notification-success-background: #C6FDC6;
 }
 ::before,
 ::after{
@@ -28,11 +34,12 @@ body{
     height: 400px;
     background-image: url('../res/images/RG2OF2024.jpg');
     background-position: center;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-color: #37023D;
 }
 .qr-code-image{
+    display: none !important;
     width: max-content;
     margin: 0 auto;
 }
@@ -59,7 +66,8 @@ form{
     font-weight: 500;
     padding-bottom: 0.35rem;
 }
-.form-row input[type="text"]{
+.form-row input[type="text"],
+.form-row select{
     outline: none;
     border: 1px solid #CCC;
     padding: 0.45rem;
@@ -67,7 +75,8 @@ form{
     background: var(--color-white);
     transition: var(--transition-fast) ease-in-out;
 }
-.form-row input[type="text"]:focus{
+.form-row input[type="text"]:focus,
+.form-row select:focus{
     border:1px solid #ebcb15;
     background: var(--color-grey);
 }
@@ -89,4 +98,27 @@ form{
     font-size: 1.2rem;
     background: #1cde1c;
     border-radius: var(--border-radius);
+}
+
+.form-hidden{
+    display: none;
+}
+.form-response {
+    display: -ms-flex;
+    display: flex;
+    justify-content: center;
+}
+.form-response span {
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+}
+.form-response span.error {
+    color: var(--notification-error);
+    border: 2px solid var(--notification-error);
+    background: var(--notification-error-background);
+}
+.form-response span.success {
+    color: var(--notification-success);
+    border: 2px solid var(--notification-success);
+    background: var(--notification-success-background);
 }
