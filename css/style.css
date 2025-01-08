@@ -122,3 +122,8 @@ form{
     border: 2px solid var(--notification-success);
     background: var(--notification-success-background);
 }
+section.check-in {
+    display: grid;
+    place-items: center;
+    text-align: center;
+}
