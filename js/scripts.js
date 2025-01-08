@@ -11,6 +11,9 @@ const registerUser = () => {
     const lastname = document.querySelector("[name='lastname']");
     const gender = document.querySelector("[name='gender']");
     const region = document.querySelector("[name='region']");
+    const fellowshipgroup = document.querySelector("[name='fellowshipgroup']");
+    const category = document.querySelector("[name='category']");
+    const department = document.querySelector("[name='department']");
     const email = document.querySelector("[name='email']");
     const phone = document.querySelector("[name='phone']");
     const passportnumber = document.querySelector("[name='passportnumber']");
@@ -25,11 +28,15 @@ const registerUser = () => {
 
         e.preventDefault(); // prevent form submission on initial click
 
-        const usernameData = ( middlename.value.length > 0 ) ? `${firstname.value} ${middlename.value} ${lastname.value}` : `${firstname.value} ${lastname.value}`;
+        let usernameData = ( middlename.value.length > 0 ) ? `${firstname.value} ${middlename.value} ${lastname.value}` : `${firstname.value} ${lastname.value}`;
+        let qrCodeId = ( middlename.value.length > 0 ) ? `${firstname.value}${middlename.value}${lastname.value}${Date.now()}` : `${firstname.value}${lastname.value}${Date.now()}`;
 
-        generateUserQRCode(usernameData, generatedImage);
+        // remove apostrophe's from username and qrcodeId
+        usernameData = usernameData.replace(/'/g, '');
+        qrCodeId = qrCodeId.replace(/'/g, '');
 
-        //console.log('Registering and Generation QR Code');
+        // generateUserQRCode(usernameData, generatedImage);
+        generateUserQRCode(usernameData, qrCodeId, generatedImage);
 
         const formData = new FormData();
 
@@ -41,14 +48,19 @@ const registerUser = () => {
             formData.append('middlename', middlename.value);
             formData.append('lastname', lastname.value);
             formData.append('gender', gender.options[gender.selectedIndex].value);
+            formData.append('fellowshipgroup', fellowshipgroup.options[fellowshipgroup.selectedIndex].value);
+            formData.append('category', category.options[category.selectedIndex].value);
+            formData.append('department', department.options[department.selectedIndex].value);
             formData.append('region', region.value);
             formData.append('email', email.value);
             formData.append('phone', phone.value);
             formData.append('passportnumber', passportnumber.value);
             formData.append('placeofstay', placeofstay.value);
+            formData.append('qrcodeid', qrCodeId);
             formData.append('file', generatedImage.files[0]);
 
             // send data to database here
+            
             fetch(URL, {
                 method: 'POST',
                 body: formData
@@ -77,6 +89,8 @@ const registerUser = () => {
                 }
             })
             .catch(err => console.log(err));
+
+
         }, 1000);
 
 
@@ -84,12 +98,12 @@ const registerUser = () => {
 
 };
 
-const generateUserQRCode = async ( username, generatedImageElement ) => {
+const generateUserQRCode = async (username, qrcodeid, generatedImageElement ) => {
     const qrCodeImage = document.querySelector('.qr-code-image');
     qrCodeImage.innerHTML = "";
 
     await new QRCode(qrCodeImage, {
-        text: username,
+        text: qrcodeid,
         width: 200,
         height: 200
     });

@@ -20,11 +20,15 @@
             $middlename = $_POST['middlename'];
             $lastname = $_POST['lastname'];
             $gender = $_POST['gender'];
+            $fellowshipgroup = $_POST['fellowshipgroup'];
+            $category = $_POST['category'];
+            $department = $_POST['department'];
             $region = $_POST['region'];
             $email = $_POST['email'];
             $phone = $_POST['phone'];
             $passportnumber = $_POST['passportnumber'];
             $placeofstay = $_POST['placeofstay'];
+            $qrcodeid = $_POST['qrcodeid'];
 
 
             $file = $_FILES['file']['name'];
@@ -49,17 +53,21 @@
                     $data['message'] = "File $file has been uploadeded";
     
                     // enter information into database
-                    $sql = " INSERT into `registration`(firstname, middlename, lastname, gender, region, email, phone, passportnumber, placeofstay, qrcodename, qrcode) VALUES (:firstname, :middlename, :lastname, :gender, :region, :email, :phone, :passportnumber, :placeofstay, :qrcodename, :qrcode) ";
+                    $sql = " INSERT into `registration`(firstname, middlename, lastname, gender, fellowshipgroup, category, department, region, email, phone, passportnumber, placeofstay, qrcodeid, qrcodename, qrcode, dateregistered, status) VALUES (:firstname, :middlename, :lastname, :gender, :fellowshipgroup, :category, :department, :region, :email, :phone, :passportnumber, :placeofstay, :qrcodeid, :qrcodename, :qrcode, CURRENT_TIMESTAMP, 'active') ";
                     $stmt = $conn->prepare($sql);
                     $stmt->bindParam(':firstname', $firstname);
                     $stmt->bindParam(':middlename', $middlename);
                     $stmt->bindParam(':lastname', $lastname);
                     $stmt->bindParam(':gender', $gender);
+                    $stmt->bindParam(':fellowshipgroup', $fellowshipgroup);
+                    $stmt->bindParam(':category', $category);
+                    $stmt->bindParam(':department', $department);
                     $stmt->bindParam(':region', $region);
                     $stmt->bindParam(':email', $email);
                     $stmt->bindParam(':phone', $phone);
                     $stmt->bindParam(':passportnumber', $passportnumber);
                     $stmt->bindParam(':placeofstay', $placeofstay);
+                    $stmt->bindParam(':qrcodeid', $qrcodeid);
                     $stmt->bindParam(':qrcodename', $file);
                     $stmt->bindParam(':qrcode', $filePath);
     
